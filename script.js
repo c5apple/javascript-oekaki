@@ -1,4 +1,5 @@
 (function () {
+  var button = document.getElementById('clearBtn');
   var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext('2d');
   var mousex, mousey;
@@ -34,5 +35,9 @@
       mousex = e.clientX;
       mousey = e.clientY;
     }
+  });
+
+  button.addEventListener('click', function () {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 })()
