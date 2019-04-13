@@ -11,17 +11,17 @@
 
   ctx.lineCap = 'round';
 
-  canvas.addEventListener('mousedown', function (e) {
-    mousex = e.clientX;
-    mousey = e.clientY;
+  var drawStartHandler = function (e) {
+    mousex = getClientX(e);
+    mousey = getClientY(e);
     state = true;
-  });
-
-  canvas.addEventListener('mouseup', function (e) {
+    e.preventDefault();
+  };
+  var drawEndHandler = function (e) {
     state = false;
-  });
-
-  canvas.addEventListener('mousemove', function (e) {
+    e.preventDefault();
+  };
+  var drawHandler = function (e) {
     if (state) {
 
       color++;
@@ -29,15 +29,45 @@
       ctx.lineWidth = Math.random() * 31;
       ctx.beginPath();
       ctx.moveTo(mousex, mousey);
-      ctx.lineTo(e.clientX, e.clientY);
+      ctx.lineTo(getClientX(e), getClientY(e));
       ctx.stroke();
 
-      mousex = e.clientX;
-      mousey = e.clientY;
+      mousex = getClientX(e);
+      mousey = getClientY(e);
     }
-  });
+    e.preventDefault();
+  };
+
+  if ('ontouchstart' in window) {
+    canvas.addEventListener('touchstart', drawStartHandler);
+    canvas.addEventListener('touchend', drawEndHandler);
+    canvas.addEventListener('touchmove', drawHandler);
+  }
+  canvas.addEventListener('mousedown', drawStartHandler);
+  canvas.addEventListener('mouseup', drawEndHandler);
+  canvas.addEventListener('mousemove', drawHandler);
 
   button.addEventListener('click', function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
+
+  var getClientX = function (event) {
+    if (event.touches && event.touches[0]) {
+      return event.touches[0].clientX;
+    } else if (event.originalEvent && event.originalEvent.changedTouches[0]) {
+      return event.originalEvent.changedTouches[0].clientX;
+    } else if (event.clientX && event.clientY) {
+      return event.clientX;
+    }
+  };
+
+  var getClientY = function (event) {
+    if (event.touches && event.touches[0]) {
+      return event.touches[0].clientY;
+    } else if (event.originalEvent && event.originalEvent.changedTouches[0]) {
+      return event.originalEvent.changedTouches[0].clientY;
+    } else if (event.clientX && event.clientY) {
+      return event.clientY;
+    }
+  };
 })()
