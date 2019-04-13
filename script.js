@@ -5,6 +5,8 @@
   var mousex, mousey;
   var state = false;
   var color = 0;
+  var lineWidth = 1;
+  var timer;
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -15,10 +17,25 @@
     mousex = getClientX(e);
     mousey = getClientY(e);
     state = true;
+    lineWidth = 1;
+
+    timer = setInterval(function () {
+      lineWidth++
+
+      if (lineWidth > 20) {
+        clearInterval(timer);
+        timer = undefined;
+      }
+    }, 100);
+
     e.preventDefault();
   };
   var drawEndHandler = function (e) {
     state = false;
+    lineWidth = 1;
+    if (timer !== undefined) {
+      clearInterval(timer);
+    }
     e.preventDefault();
   };
   var drawHandler = function (e) {
@@ -26,7 +43,7 @@
 
       color++;
       ctx.strokeStyle = 'hsl(' + color + ', 100%, 50%)';
-      ctx.lineWidth = Math.random() * 31;
+      ctx.lineWidth = lineWidth;
       ctx.beginPath();
       ctx.moveTo(mousex, mousey);
       ctx.lineTo(getClientX(e), getClientY(e));
