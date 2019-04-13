@@ -3,9 +3,12 @@
   var ctx = canvas.getContext('2d');
   var mousex, mousey;
   var state = false;
+  var color = 0;
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+  ctx.lineCap = 'round';
 
   canvas.addEventListener('mousedown', function (e) {
     mousex = e.clientX;
@@ -19,6 +22,10 @@
 
   canvas.addEventListener('mousemove', function (e) {
     if (state) {
+
+      color++;
+      ctx.strokeStyle = 'hsl(' + color + ', 100%, 50%)';
+      ctx.lineWidth = Math.random() * 31;
       ctx.beginPath();
       ctx.moveTo(mousex, mousey);
       ctx.lineTo(e.clientX, e.clientY);
